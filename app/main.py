@@ -3,7 +3,7 @@ from .schemas import User
 
 app = FastAPI()
 
-users: list[User] = ["KEVIN"]
+users: list[User] = []
 @app.get("/api/users")
 def get_users():
   return users
@@ -21,3 +21,17 @@ def add_user(user: User):
     raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="user_id already exists")
   users.append(user)
   return user
+@app.put("/api/users/{user_id}")
+def update_user(user_id: int, user: User):
+    if user.user_id != user_id:
+        raise HTTPException(
+            status_code=400,
+            detail="Body user_id must match path user_id"
+        )
+
+    for i in range(len(users)):
+        if users[i].user_id == user_id:
+            users[i] = user
+            return user
+
+    raise HTTPException(status_code=404, detail="User not found")
