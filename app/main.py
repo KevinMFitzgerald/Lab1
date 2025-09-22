@@ -35,3 +35,16 @@ def update_user(user_id: int, user: User):
             return user
 
     raise HTTPException(status_code=404, detail="User not found")
+
+@app.delete("/api/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(user_id: int):
+    for u in users:
+        if u.user_id == user_id:
+            users.remove(u)
+            return
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+# ✅ Health endpoint
+@app.get("/health")
+def health():
+    return {"status": "ok"}
